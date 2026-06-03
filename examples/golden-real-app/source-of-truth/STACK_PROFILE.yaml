@@ -1,0 +1,47 @@
+profile_version: stack-profile-v1
+frontend:
+  language: python
+  framework: stdlib-http
+  module_root: examples/golden-real-app
+  theme_root: none
+  test_cmd: ./scripts/run-golden-e2e.sh --json
+  dev_cmd: python3 -B -S examples/golden-real-app/app.py
+  visual_check: ./scripts/run-golden-e2e.sh --json
+backend:
+  language: python
+  framework: stdlib-http
+  module_root: examples/golden-real-app
+  test_cmd: ./scripts/run-golden-e2e.sh --json
+  dev_cmd: python3 -B -S examples/golden-real-app/app.py
+  health_url: http://127.0.0.1:8765/health
+db:
+  engine: sqlite
+  migrate_cmd: none
+  seed_cmd: none
+git_workflow: push-to-main
+design_tokens_enforcer: none
+runtime:
+  port_strategy: auto-per-slice
+  port_scan_span: 100
+  port_defaults:
+    frontend: 8765
+    backend: 8765
+    api: none
+    db: none
+    worker: none
+  port_env:
+    frontend: CLAUDE_FRONTEND_PORT
+    backend: CLAUDE_BACKEND_PORT
+verification:
+  real_data_policy: real_or_provided_only
+  docker:
+    compose_project_template: "{task_slug}"
+    hard_reset_cmd: none
+    logs_cmd: none
+  rancher:
+    enabled: false
+    worker_logs_required: false
+    worker_logs_cmd: none
+observability:
+  log_check_cmd: ./scripts/check-runtime-logs.sh --mode check --strict --json
+  rancher_worker_logs_cmd: none

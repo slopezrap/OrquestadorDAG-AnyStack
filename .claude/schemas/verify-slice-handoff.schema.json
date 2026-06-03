@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orquestador.verify-slice-handoff.v1",
+  "title": "Verify-slice handoff contract",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "TASK_ID",
+    "VERIFY_OUTCOME",
+    "DATA_CONTRACT_ROWS",
+    "DATA_SETUP",
+    "PERSISTED_DATA_OBSERVED",
+    "FLOWS_TESTED",
+    "EVIDENCE",
+    "REAL_USER_VERIFIED",
+    "NO_STUB_DATA",
+    "NO_STUB_DATA_USED",
+    "REAL_DATA_SOURCE",
+    "HUMAN_REPRODUCTION",
+    "RUNTIME_LOGS_CHECKED",
+    "ERROR_LOGS_STATUS",
+    "RUNTIME_LOG_ERRORS",
+    "RANCHER_WORKER_LOGS_CHECKED",
+    "DOMAIN_RULES_VERIFIED"
+  ],
+  "properties": {
+    "TASK_ID": {
+      "type": "string",
+      "pattern": "^P[0-9]{2}-S[0-9]{2}-T[0-9]{3}$"
+    },
+    "VERIFY_OUTCOME": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "issues_found",
+        "blocked"
+      ]
+    },
+    "REAL_USER_VERIFIED": {
+      "type": "string"
+    },
+    "NO_STUB_DATA": {
+      "type": "string"
+    },
+    "NO_STUB_DATA_USED": {
+      "type": "string"
+    },
+    "ERROR_LOGS_STATUS": {
+      "type": "string"
+    },
+    "RUNTIME_LOG_ERRORS": {
+      "type": "string"
+    },
+    "DOMAIN_RULES_VERIFIED": {
+      "type": "string"
+    },
+    "MCP_BROWSER": {
+      "type": "string",
+      "description": "Browser MCP for web visual verification; not_applicable:flutter_mobile for Flutter mobile."
+    },
+    "MCP_CLIENT": {
+      "type": "string",
+      "enum": [
+        "dart",
+        "flutter",
+        "flutter-driver",
+        "not_applicable",
+        "pending"
+      ],
+      "description": "Dart/Flutter MCP client for Flutter mobile verification."
+    },
+    "VISUAL_CHECK_METHOD": {
+      "type": "string",
+      "enum": [
+        "browser",
+        "simulator",
+        "emulator",
+        "device",
+        "ios-simulator",
+        "android-emulator",
+        "physical-device",
+        "not_applicable",
+        "pending"
+      ],
+      "description": "Human visual verification surface."
+    },
+    "SIMULATOR_DEVICE": {
+      "type": "string"
+    },
+    "FLUTTER_MCP_HEALTH": {
+      "type": "string"
+    }
+  },
+  "x-enforced-by": [
+    ".claude/bin/check_handoff_contract.py",
+    ".claude/bin/verify_slice_state.py"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orquestador.domain-rule-index.v1",
+  "title": "Derived domain rule index",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["domain_rules", "task_coverage"],
+  "properties": {
+    "domain_rules": {"type": "object"},
+    "task_coverage": {"type": "object"}
+  },
+  "x-enforced-by": [".claude/bin/bootstrap_source_of_truth.py", ".claude/bin/check_wiring_contract.py"]
+}

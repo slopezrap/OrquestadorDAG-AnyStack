@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orquestador.doctor-result.v1",
+  "title": "Orchestrator doctor result",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["ok", "errors", "warnings", "checks"],
+  "properties": {
+    "ok": {"type": "boolean"},
+    "errors": {"type": "array"},
+    "warnings": {"type": "array"},
+    "checks": {"type": "object"}
+  },
+  "x-enforced-by": [".claude/bin/orchestrator_doctor.py"]
+}

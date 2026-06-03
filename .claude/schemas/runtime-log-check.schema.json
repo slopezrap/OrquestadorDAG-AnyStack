@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orquestador.runtime-log-check.v1",
+  "title": "Runtime log check result",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["status", "files_scanned", "files_count", "findings_count", "findings", "runtime_logs_clean", "task_id"],
+  "properties": {
+    "status": {"type": "string", "enum": ["pass", "errors_found", "no_logs"]},
+    "task_id": {"type": "string"},
+    "files_scanned": {"type": "array", "items": {"type": "string"}},
+    "files_count": {"type": "integer", "minimum": 0},
+    "findings_count": {"type": "integer", "minimum": 0},
+    "findings": {"type": "array"},
+    "runtime_logs_clean": {"type": "boolean"}
+  },
+  "x-enforced-by": [".claude/bin/check_runtime_logs.py", "scripts/check-runtime-logs.sh"]
+}

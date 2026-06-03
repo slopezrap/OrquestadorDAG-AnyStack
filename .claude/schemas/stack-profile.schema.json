@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orquestador.stack-profile.v1",
+  "title": "Stack profile contract",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "profile_version",
+    "frontend",
+    "backend",
+    "db",
+    "git_workflow"
+  ],
+  "properties": {
+    "profile_version": {
+      "type": "string"
+    },
+    "frontend": {
+      "type": "object"
+    },
+    "backend": {
+      "type": "object"
+    },
+    "db": {
+      "type": "object"
+    },
+    "git_workflow": {
+      "type": "string"
+    },
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "port_strategy": {
+          "type": "string"
+        },
+        "port_scan_span": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "port_defaults": {
+          "type": "object"
+        },
+        "port_env": {
+          "type": "object"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "mobile": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": [
+                "boolean",
+                "string"
+              ]
+            },
+            "mcp_client": {
+              "type": "string"
+            },
+            "visual_check_method": {
+              "type": "string"
+            },
+            "simulator_required": {
+              "type": [
+                "boolean",
+                "string"
+              ]
+            },
+            "device_selector": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "observability": {
+      "type": "object"
+    }
+  },
+  "x-enforced-by": [
+    ".claude/bin/stack_profile.py"
+  ]
+}

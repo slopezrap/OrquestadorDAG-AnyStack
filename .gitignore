@@ -1,0 +1,119 @@
+# OrquestadorDAG AnyStack — framework template .gitignore
+# Mantiene el template limpio: cero cruft de OS, cero compilados, cero backups.
+
+# ─── OS / editor cruft ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# ─── backups / temp ──────────────────────────────────────────────────────────
+*.bak
+*.tmp
+*.orig
+.#*
+
+# ─── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+
+# ─── Node (por si CI/scripts lo usan) ────────────────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ─── Flutter / Dart (cuando exista app/) ─────────────────────────────────────
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/build/
+app/.idea/
+app/.packages
+app/pubspec.lock.bak
+app/ios/Pods/
+app/ios/.symlinks
+app/android/.gradle/
+app/android/local.properties
+app/android/key.properties
+app/.fvm/
+**/.dart_tool/
+
+# ─── env y secretos ──────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── logs y artefactos de runtime del framework ──────────────────────────────
+# Estado mutable de orchestrator-state/ se versiona por decisión del usuario.
+# Solo se excluyen los lockfiles efímeros de fcntl.flock.
+orchestrator-state/**/*.lock
+orchestrator-state/tasks/*.lock
+orchestrator-state/tasks/bash-ledger.jsonl
+orchestrator-state/tasks/bash-ledger-*.jsonl.gz
+# High-churn local runtime trace. Handoffs/evidence reports are the committed audit trail;
+# ledger.jsonl remains local so PostToolUse Bash hooks do not dirty Git after close.
+orchestrator-state/tasks/ledger.jsonl
+orchestrator-state/tasks/ledger-*.jsonl.gz
+docs/product-baseline/**/*.lock
+docs/product-baseline/*.lock
+
+.claude/settings.local.json
+
+# ─── build outputs ───────────────────────────────────────────────────────────
+dist/
+build/
+*.log
+.claude/worktrees/
+
+# generated DAG/runtime artifacts (stage per-slice explicitly via scripts/git-add-slice.sh)
+# The local scheduler owns these files. Keep the canonical repo clean between
+# parallel worktrees; git-add-slice force-adds only the current slice audit artifacts.
+orchestrator-state/tasks/registry.json
+orchestrator-state/tasks/work-items/
+orchestrator-state/tasks/task-packs/
+orchestrator-state/tasks/handoffs/
+orchestrator-state/tasks/evidence/
+orchestrator-state/tasks/reports/
+orchestrator-state/tasks/follow-ups/
+orchestrator-state/tasks/source-doc-patches/
+orchestrator-state/memory/official-doc-notes/
+orchestrator-state/memory/archive/
+
+# ─── runtime state vivo (NO commitearlo: cambia constantemente y choca en pr-flow) ───
+# Estos ficheros los muta cada slice; commitearlos en una rama causa conflicts
+# en cuanto otra slice cierra antes. Vive sólo localmente por máquina.
+orchestrator-state/memory/PROGRESS.md
+orchestrator-state/memory/PROGRESS.md.archive/
+orchestrator-state/agent-memory/*/MEMORY.md
+orchestrator-state/agent-memory/*/archive/
+orchestrator-state/agent-memory/*/*.lock
+orchestrator-state/agent-memory/*/*.tmp
+orchestrator-state/tasks/runtime-state.json
+orchestrator-state/tasks/ledger.jsonl
+orchestrator-state/tasks/bash-ledger.jsonl
+orchestrator-state/memory/task-dag.json
+orchestrator-state/memory/task-dag.md
+orchestrator-state/memory/execution-graph.json
+orchestrator-state/memory/stack-profile.json
+orchestrator-state/memory/source-manifest.json
+orchestrator-state/hook-errors.log
+orchestrator-state/hook-info.log
+orchestrator-state/archive/
+orchestrator-state/dev-logs/
+orchestrator-state/dev-ports/
+# registry.json es runtime local regenerable; no se commitea desde slices.
+# Sí se commitean orchestrator-state/tasks/lifecycle-events/*.json: señal durable post-merge.
+
+# deferred cleanup requests for hook-safe worktree deletion
+orchestrator-state/tasks/cleanup-requests/
+orchestrator-state/tasks/worktree-cleanup-*.log
+orchestrator-state/tasks/cleanup-deferred-hook.log

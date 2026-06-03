@@ -1,0 +1,175 @@
+# SCREEN_JOURNEY_REDACTOR_CONTRACT:
+# This stack profile is not a layer plan. Generated apps must group API/front/UX
+# work by screen or journey lane: screen contract, API/data contract, connected UI,
+# required UX states and journey verification. Do not use fake or unprovided data.
+# screen/journey lane + estados UX + datos reales/proporcionados are mandatory.
+
+# STACK_PROFILE.yaml — Declarative stack profile
+# Replace every value with the real stack. This file is source-of-truth for paths,
+# commands, token enforcer and git workflow. Do not copy example paths from another stack.
+profile_version: stack-profile-v1
+frontend:
+  language: "{{frontend_language}}"              # e.g. typescript | dart | swift | kotlin | none
+  framework: "{{frontend_framework}}"            # e.g. react | nextjs | flutter | swiftui | none
+  module_root: "{{frontend_module_root}}"        # real frontend source root, or none
+  theme_root: "{{frontend_theme_root}}"          # real design/theme root, or none
+  test_cmd: "{{frontend_test_cmd}}"              # real frontend test command, or none
+  dev_cmd: "{{frontend_dev_cmd}}"                # real frontend dev command, or none
+  visual_check: "{{visual_check}}"               # browser | emulator | simulator | device | tui | none
+backend:
+  language: "{{backend_language}}"               # e.g. python | typescript | go | none
+  framework: "{{backend_framework}}"             # e.g. fastapi | express | nestjs | none
+  module_root: "{{backend_module_root}}"         # real backend source root, or none
+  test_cmd: "{{backend_test_cmd}}"               # real backend test command, or none
+  dev_cmd: "{{backend_dev_cmd}}"                 # real backend dev command, or none
+  health_url: "{{backend_health_url}}"           # real health URL, or none
+db:
+  engine: "{{db_engine}}"                        # e.g. postgres | sqlite | mysql | none
+  migrate_cmd: "{{db_migrate_cmd}}"              # real migration command, or none
+  seed_cmd: "{{db_seed_cmd}}"                    # compatibility hook; only load real/provided data, or none
+# DEFAULT: pr-flow. Each TASK_ID gets its own worktree + branch + PR with
+# auto-merge and safe local/remote branch cleanup. Safe for parallel terminals.
+# Override to 'push-to-main' ONLY if the project is single-developer,
+# single-slice-at-a-time, no PRs desired. With parallel terminals on the
+# same main checkout, one terminal's git/Bash can clobber another's
+# active write_set (write_scope_guard does NOT cover Bash mutations).
+git_workflow: pr-flow                 # push-to-main/direct-main | pr-flow | gitflow
+# Optional guardrail. Leave blank for template portability; set in real projects
+# or via env vars CLAUDE_EXPECTED_GIT_USER / CLAUDE_EXPECTED_GIT_EMAIL / CLAUDE_EXPECTED_GH_LOGIN.
+git_identity:
+  user_name: ""                    # e.g. your-git-user
+  user_email: ""                   # e.g. your verified Git email
+  github_login: ""                 # e.g. your-github-login
+design_tokens_enforcer: "{{design_tokens_enforcer}}" # design_tokens_v1 | none | <project_plugin>
+
+
+app_surfaces:
+  web:
+    enabled: "{{web_enabled}}"                    # true | false
+    route_root: "{{web_route_root}}"              # real route root or none
+    visual_check: "{{web_visual_check}}"          # browser | none
+  mobile:
+    enabled: "{{mobile_enabled}}"                 # true | false
+    visual_check: "{{mobile_visual_check}}"       # simulator | emulator | device | none
+  admin:
+    enabled: "{{admin_enabled}}"                  # true | false
+    route_root: "{{admin_route_root}}"            # real admin route root or none
+  public_api:
+    enabled: "{{public_api_enabled}}"             # true | false
+    base_path: "{{public_api_base_path}}"         # real API base path or none
+  workers:
+    enabled: "{{workers_enabled}}"                # true | false
+    queue_or_scheduler: "{{worker_scheduler}}"    # queue | scheduler | cron | none
+
+
+architecture_blueprint:
+  arc42_overlay_required: true
+  refs_expected: "A42-01..A42-12"
+  introduction_and_goals_ref: "A42-01"
+  constraints_ref: "A42-02"
+  context_and_scope_ref: "A42-03"
+  solution_strategy_ref: "A42-04"
+  building_block_view_ref: "A42-05"
+  runtime_view_ref: "A42-06"
+  deployment_view_ref: "A42-07"
+  crosscutting_concepts_ref: "A42-08"
+  architecture_decisions_ref: "A42-09"
+  quality_requirements_ref: "A42-10"
+  risks_and_technical_debt_ref: "A42-11"
+  glossary_ref: "A42-12"
+  must_be_referenced_by_registry_column: "Architecture refs"
+  quality_scenarios_must_map_to_eval_refs: true
+  deployment_view_must_match_runtime_ports: true
+  runtime_view_must_match_journeys_and_core_logic: true
+
+runtime:
+  # Per-slice runtime isolation. docker compose -p isolates container names,
+  # networks and volumes; host ports are global, so the orchestrator allocates
+  # free ports per TASK_ID before running compose/dev commands.
+  port_strategy: "auto-per-slice"
+  port_scan_span: 2000
+  port_defaults:
+    frontend: 3000   # set to your real default host port or none
+    backend: 8000    # set to your real default host port or none
+    api: 8080        # optional extra HTTP port, or none
+    db: 5432         # DB host port if published, or none
+    worker: 9000     # worker/debug/metrics port if published, or none
+  port_env:
+    frontend: CLAUDE_FRONTEND_PORT
+    backend: CLAUDE_BACKEND_PORT
+    api: CLAUDE_API_PORT
+    db: CLAUDE_DB_PORT
+    worker: CLAUDE_WORKER_PORT
+
+core_logic:
+  required: "{{core_logic_required}}"                 # true | false
+  type: "{{core_logic_type}}"                         # rules_engine | algorithm | scoring | matching | ranking | workflow | none
+  description: "{{core_logic_description}}"          # motor central especializado del producto, or none
+  deterministic_or_probabilistic: "{{core_determinism}}" # deterministic | probabilistic | hybrid | none
+  requires_external_data: "{{core_requires_external_data}}"   # true | false
+  requires_scheduled_jobs: "{{core_requires_scheduled_jobs}}" # true | false
+  requires_human_review: "{{core_requires_human_review}}"     # true | false
+  versioning_strategy: "{{core_versioning_strategy}}"         # config/version column/model version/none
+  reproducibility_strategy: "{{core_reproducibility_strategy}}" # how tests rerun the same logic deterministically
+  audit_strategy: "{{core_audit_strategy}}"                   # input/output/version/user trace, or none
+  evaluation_command: "{{core_evaluation_command}}"           # command proving CORE-* and EVAL-* work, or none
+  requires_reproducible_tests: true
+  requires_auditability: true
+  refs_expected: "CORE-*, AL-*, DR-*, AUTH-*, STATE-*, ERR-*, EVAL-*"
+
+logic_contracts:
+  require_application_logic_refs: true
+  require_core_logic_refs: true
+  require_permission_refs: true
+  require_state_refs: true
+  require_failure_refs: true
+  require_integration_refs_when_applicable: true
+  require_ui_refs_for_visible_slices: true
+  require_data_refs_when_persistent: true
+  require_observability_refs_for_sensitive_or_core_logic: true
+  require_evaluation_refs_for_core_logic: true
+
+
+verification_data:
+  required: true
+  policy: "real_or_provided_only"
+  seed_or_import_cmd: "{{verification_seed_or_import_cmd}}" # idempotent command or none
+  required_fixture_refs: "{{verification_fixture_refs}}"    # VDATA-*, DATA-*, external accounts/files, or none
+  synthetic_data_allowed: "{{synthetic_data_allowed}}"      # true only with explicit reason
+  missing_data_behavior: "block_or_followup"                # block_or_followup | allow_synthetic_with_reason
+
+verification:
+  real_data_policy: "real_or_provided_only"   # no stubs/fake data for slice close
+  docker:
+    compose_project_template: "{{task_slug}}" # TASK_ID lowercased, e.g. p01-s02-t003
+    compose_file: "{{docker_compose_file}}"       # real compose file path, e.g. infra/compose/docker-compose.dev.yml, or auto/none
+    hard_reset_cmd: "{{docker_hard_reset_cmd}}" # optional; default helper uses docker compose -p <compose_project> and allocated CLAUDE_*_PORT vars
+    logs_cmd: "{{docker_logs_cmd}}"             # optional; e.g. docker compose -p {{task_slug}} logs --no-color --tail=500
+    cleanup_cmd: "{{docker_cleanup_cmd}}"       # optional; default helper uses scripts/cleanup-slice-runtime.sh
+    cleanup_remove_images: "local"              # local | label | all | none; keep local unless you know images are not shared
+  rancher:
+    enabled: "{{rancher_enabled}}"              # true | false
+    worker_logs_required: "{{rancher_worker_logs_required}}" # true when worker/queues/jobs matter
+    worker_logs_cmd: "{{rancher_worker_logs_cmd}}" # real kubectl/rancher log command, or none
+    cleanup_cmd: "{{rancher_cleanup_cmd}}"      # optional cleanup for per-slice Rancher workloads/jobs created by verify; none if not applicable
+  mobile:
+    enabled: "{{mobile_verification_enabled}}"      # true for Flutter/Dart mobile simulator/emulator/device verification
+    visual_check_method: "{{mobile_visual_check_method}}" # simulator | emulator | device | none
+    mcp_client: "{{mobile_mcp_client}}"             # dart | flutter | flutter-driver | none
+    simulator_required: "{{mobile_simulator_required}}"
+    device_selector: "{{mobile_device_selector}}"   # e.g. ios-simulator, android-emulator, physical-device
+observability:
+  log_check_cmd: "{{runtime_log_check_cmd}}"       # optional custom log collection/check command
+  rancher_worker_logs_cmd: "{{rancher_worker_logs_cmd}}" # optional alias consumed by scripts/check-runtime-logs.sh
+  rancher_cleanup_cmd: "{{rancher_cleanup_cmd}}"   # optional alias consumed by scripts/cleanup-slice-runtime.sh
+
+
+template_self_review:
+  # ChatGPT must satisfy these before producing the final filled STACK_PROFILE.yaml.
+  no_placeholder_values: true
+  surfaces_match_ux_contract: true
+  commands_are_real_or_none: true
+  visual_check_matches_surface: true
+  core_logic_has_evaluation_when_required: true
+  verification_data_declared: true
+  runtime_logs_declared_or_not_applicable: true

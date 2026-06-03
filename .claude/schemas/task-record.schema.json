@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "orquestador.task-record.v1",
+  "title": "Registry task record",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "id",
+    "status",
+    "depends_on",
+    "write_set",
+    "conflict_group"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^P[0-9]{2}-S[0-9]{2}-T[0-9]{3}$"
+    },
+    "status": {
+      "type": "string"
+    },
+    "depends_on": {
+      "type": "array"
+    },
+    "write_set": {
+      "type": "array"
+    },
+    "conflict_group": {
+      "type": "string"
+    },
+    "domain_rule_refs": {
+      "type": "array"
+    },
+    "application_logic_refs": {
+      "type": "array"
+    },
+    "core_logic_refs": {
+      "type": "array"
+    },
+    "permission_refs": {
+      "type": "array"
+    },
+    "state_refs": {
+      "type": "array"
+    },
+    "failure_refs": {
+      "type": "array"
+    },
+    "integration_refs": {
+      "type": "array"
+    },
+    "ui_refs": {
+      "type": "array"
+    },
+    "data_refs": {
+      "type": "array"
+    },
+    "observability_refs": {
+      "type": "array"
+    },
+    "evaluation_refs": {
+      "type": "array"
+    },
+    "architecture_refs": {
+      "type": "array"
+    }
+  },
+  "x-enforced-by": [
+    ".claude/bin/bootstrap_source_of_truth.py",
+    ".claude/bin/check_task_dag.py"
+  ]
+}
